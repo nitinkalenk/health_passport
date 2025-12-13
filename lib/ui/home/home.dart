@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-class HomePageScreen extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_passport/providers/appointments_provider.dart';
+
+class HomePageScreen extends ConsumerWidget {
   const HomePageScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // List of quote images
     final List<String> imgList = [
       'assets/images/quote1.png',
@@ -55,7 +58,7 @@ class HomePageScreen extends StatelessWidget {
                 children: [
                   Expanded(child: _buildFamilySection(context)),
                   const Divider(height: 1),
-                  Expanded(child: _buildAppointmentsSection(context)),
+                  Expanded(child: _buildAppointmentsSection(context, ref)),
                   const Divider(height: 1),
                   Expanded(child: _buildReportsSection(context)),
                 ],
@@ -112,7 +115,9 @@ class HomePageScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAppointmentsSection(BuildContext context) {
+  Widget _buildAppointmentsSection(BuildContext context, WidgetRef ref) {
+    final appointmentsAsyncValue = ref.watch(appointmentsProvider);
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -133,7 +138,9 @@ class HomePageScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Expanded(
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align to top
               children: [
+                // Create Button (Always visible)
                 _buildCard(
                   context,
                   icon: Icons.add,
@@ -142,12 +149,64 @@ class HomePageScreen extends StatelessWidget {
                   onTap: () {},
                 ),
                 const SizedBox(width: 12),
-                _buildCard(
-                  context,
-                  icon: Icons.calendar_today,
-                  label: 'Dr. Smith',
-                  isAddButton: false,
-                  onTap: () {},
+
+                // List or Loading/Error
+                Expanded(
+                  child: appointmentsAsyncValue.when(
+                    data: (appointments) {
+                      if (appointments.isEmpty) {
+                        return const Center(child: Text("No appointments"));
+                      }
+                      return ListView.separated(
+                        itemCount: appointments.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 8),
+                        itemBuilder: (context, index) {
+                          final appointment = appointments[index];
+                          return Card(
+                            elevation: 0,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: Colors.grey.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 0,
+                              ),
+                              dense: true,
+                              leading: const Icon(
+                                Icons.calendar_month,
+                                color: Colors.deepPurple,
+                              ),
+                              title: Text(
+                                appointment.doctorName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${appointment.appointmentDate} • ${appointment.reason}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (err, stack) => Center(child: Text('Error: $err')),
+                  ),
                 ),
               ],
             ),
@@ -213,6 +272,7 @@ class HomePageScreen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 100, // Small square card
+        height: 100, // Fixed height for alignment with list
         decoration: BoxDecoration(
           color: isAddButton
               ? Theme.of(context).colorScheme.primaryContainer
