@@ -137,78 +137,46 @@ class HomePageScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start, // Align to top
-              children: [
-                // Create Button (Always visible)
-                _buildCard(
-                  context,
-                  icon: Icons.add,
-                  label: 'Create Appointment',
-                  isAddButton: true,
-                  onTap: () {},
-                ),
-                const SizedBox(width: 12),
-
-                // List or Loading/Error
-                Expanded(
-                  child: appointmentsAsyncValue.when(
-                    data: (appointments) {
-                      if (appointments.isEmpty) {
-                        return const Center(child: Text("No appointments"));
-                      }
-                      return ListView.separated(
-                        itemCount: appointments.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final appointment = appointments[index];
-                          return Card(
-                            elevation: 0,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withValues(alpha: 0.3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
-                                color: Colors.grey.withValues(alpha: 0.2),
-                              ),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 0,
-                              ),
-                              dense: true,
-                              leading: const Icon(
-                                Icons.calendar_month,
-                                color: Colors.deepPurple,
-                              ),
-                              title: Text(
-                                appointment.doctorName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "${appointment.appointmentDate} • ${appointment.reason}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          );
-                        },
+            child: appointmentsAsyncValue.when(
+              data: (appointments) {
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: appointments.length + 1, // +1 for Create Button
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // Create Appointment Button
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: _buildCard(
+                          context,
+                          icon: Icons.add,
+                          label: 'Create Appointment',
+                          isAddButton: true,
+                          onTap: () {},
+                        ),
                       );
-                    },
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (err, stack) => Center(child: Text('Error: $err')),
-                  ),
-                ),
-              ],
+                    }
+
+                    final appointment = appointments[index - 1];
+                    // Appointment Item - Styled same as Create Button (Square-ish)
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: _buildCard(
+                        context,
+                        icon: Icons.calendar_month,
+                        label:
+                            "${appointment.doctorName}\n${appointment.appointmentDate}",
+                        isAddButton: false,
+                        onTap: () {},
+                      ),
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => Center(child: Text('Error: $err')),
             ),
           ),
         ],
