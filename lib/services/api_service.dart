@@ -39,4 +39,21 @@ class ApiService {
       throw Exception('Failed to load family members');
     }
   }
+
+  Future<bool> createAppointment(Map<String, dynamic> appointmentData) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/appointments/'),
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(appointmentData),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception('Failed to create appointment');
+    }
+  }
 }

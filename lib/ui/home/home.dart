@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
 import 'package:health_passport/providers/family_members_provider.dart';
 import 'package:health_passport/ui/appointment/appointment_details.dart';
+import 'package:health_passport/ui/appointment/create_appointment.dart';
 import 'package:health_passport/ui/family/family_member_details.dart';
 import 'package:health_passport/providers/reports_provider.dart';
 
@@ -187,7 +188,14 @@ class HomePageScreen extends ConsumerWidget {
                     icon: Icons.add,
                     label: 'Create Appointment',
                     isAddButton: true,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CreateAppointmentScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),
