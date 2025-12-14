@@ -5,12 +5,10 @@ import 'package:health_passport/models/report.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'https://api.jsonbin.io/v3/b';
+  static const String baseUrl = 'http://localhost:8000';
 
   Future<List<Appointment>> fetchAppointments() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/693d6cca43b1c97be9eba14b?meta=false'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/appointments/1'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
@@ -21,9 +19,7 @@ class ApiService {
   }
 
   Future<List<Report>> fetchReports() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/693e40cbae596e708f98a97d?meta=false'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/patients/1/documents'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
@@ -34,9 +30,7 @@ class ApiService {
   }
 
   Future<List<FamilyMember>> fetchFamilyMembers() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/693e4601d0ea881f40280608?meta=false'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/family/2'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
