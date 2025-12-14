@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
 import 'package:health_passport/providers/family_members_provider.dart';
+import 'package:health_passport/ui/family/family_member_details.dart';
 import 'package:health_passport/providers/reports_provider.dart';
 
 class HomePageScreen extends ConsumerWidget {
@@ -120,7 +121,15 @@ class HomePageScreen extends ConsumerWidget {
                             icon: Icons.person,
                             label: member.fullName,
                             isAddButton: false,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FamilyMemberDetailsScreen(member: member),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
