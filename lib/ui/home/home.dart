@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
+import 'package:health_passport/providers/reports_provider.dart';
 
 class HomePageScreen extends ConsumerWidget {
   const HomePageScreen({super.key});
@@ -60,7 +61,7 @@ class HomePageScreen extends ConsumerWidget {
                   const Divider(height: 1),
                   Expanded(child: _buildAppointmentsSection(context, ref)),
                   const Divider(height: 1),
-                  Expanded(child: _buildReportsSection(context)),
+                  Expanded(child: _buildReportsSection(context, ref)),
                 ],
               ),
             ),
@@ -192,7 +193,9 @@ class HomePageScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildReportsSection(BuildContext context) {
+  Widget _buildReportsSection(BuildContext context, WidgetRef ref) {
+    final reportsAsyncValue = ref.watch(reportsProvider);
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -212,22 +215,50 @@ class HomePageScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: Row(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
-                _buildCard(
-                  context,
-                  icon: Icons.add,
-                  label: 'Add Report',
-                  isAddButton: true,
-                  onTap: () {},
+                UnconstrainedBox(
+                  child: _buildCard(
+                    context,
+                    icon: Icons.add,
+                    label: 'Add Report',
+                    isAddButton: true,
+                    onTap: () {},
+                  ),
                 ),
                 const SizedBox(width: 12),
-                _buildCard(
-                  context,
-                  icon: Icons.description,
-                  label: 'Blood Work',
-                  isAddButton: false,
-                  onTap: () {},
+                ...reportsAsyncValue.when(
+                  data: (reports) {
+                    if (reports.isEmpty) {
+                      return [const Center(child: Text("No reports"))];
+                    }
+                    return reports.expand(
+                      (report) => [
+                        UnconstrainedBox(
+                          child: _buildCard(
+                            context,
+                            icon: report.type == 'bllod'
+                                ? Icons.bloodtype
+                                : Icons.description,
+                            label: report.filename,
+                            isAddButton: false,
+                            onTap: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                    );
+                  },
+                  loading: () => [
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ],
+                  error: (err, stack) => [Center(child: Text('Error: $err'))],
                 ),
               ],
             ),
