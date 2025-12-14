@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/reports_provider.dart';
 import 'package:health_passport/services/api_service.dart';
 import 'package:health_passport/ui/share/qr_code_screen.dart';
-import 'package:uuid/uuid.dart';
 
 class SelectReportsScreen extends ConsumerStatefulWidget {
   const SelectReportsScreen({super.key});
@@ -141,14 +140,12 @@ class _SelectReportsScreenState extends ConsumerState<SelectReportsScreen> {
                                                   context,
                                                 ); // Close bottom sheet
 
-                                                // 4. Generate UUID for QR (keep as UUID per request)
-                                                var uuid = const Uuid().v4();
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         QRCodeScreen(
-                                                          uuid: uuid,
+                                                          shareId: shareId,
                                                         ),
                                                   ),
                                                 );

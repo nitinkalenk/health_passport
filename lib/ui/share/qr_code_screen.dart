@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QRCodeScreen extends StatelessWidget {
-  final String uuid;
+  final int shareId;
 
-  const QRCodeScreen({super.key, required this.uuid});
+  const QRCodeScreen({super.key, required this.shareId});
 
   @override
   Widget build(BuildContext context) {
-    final String url = 'http://google.com/$uuid';
+    final String url = 'http://localhost:1000/$shareId';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Share Data')),
@@ -24,13 +24,19 @@ class QRCodeScreen extends StatelessWidget {
                 'Scan this QR code',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
+              const SizedBox(height: 16),
+              Text(
+                'OR Open http://localhost:1000 and enter share pin :',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
               const SizedBox(height: 8),
               Text(
-                url,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                '$shareId',
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ],
           ),
