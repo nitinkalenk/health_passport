@@ -5,6 +5,7 @@ import 'package:health_passport/ui/home/home.dart';
 import 'package:health_passport/ui/profile/profile.dart';
 import 'package:health_passport/ui/web/shares_content.dart';
 import 'package:health_passport/ui/web/shares_login.dart';
+import 'package:health_passport/ui/web/web_report_preview.dart';
 
 GoRouter router() => GoRouter(
   initialLocation: Routes.home,
@@ -34,6 +35,16 @@ GoRouter router() => GoRouter(
             final pin = state.pathParameters['pin']!;
             return SharesContentScreen(pin: pin);
           },
+          routes: [
+            GoRoute(
+              path: 'preview/:reportId',
+              builder: (context, state) {
+                final pin = state.pathParameters['pin']!;
+                final reportId = state.pathParameters['reportId']!;
+                return WebReportPreviewScreen(pin: pin, reportId: reportId);
+              },
+            ),
+          ],
         ),
       ],
     ),
@@ -78,14 +89,8 @@ class _ScaffoldWithBottomNavBarState extends State<_ScaffoldWithBottomNavBar> {
       body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _calculateSelectedIndex(context),
         selectedItemColor: Theme.of(context).primaryColor,

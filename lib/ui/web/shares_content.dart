@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:health_passport/models/patient.dart';
 import 'package:health_passport/models/report.dart';
 import 'package:health_passport/models/share_details.dart';
@@ -26,7 +27,7 @@ class _SharesContentScreenState extends State<SharesContentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Shared Documents')),
+      appBar: AppBar(title: const Text('Passport')),
       body: FutureBuilder<ShareDetails>(
         future: _shareDetailsFuture,
         builder: (context, snapshot) {
@@ -125,7 +126,7 @@ class _SharesContentScreenState extends State<SharesContentScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Shared Documents',
+                        'Reports / Prescriptions',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 24),
@@ -142,6 +143,11 @@ class _SharesContentScreenState extends State<SharesContentScreen> {
                                 leading: const Icon(Icons.description),
                                 title: Text(report.filename),
                                 subtitle: Text(report.type),
+                                onTap: () {
+                                  context.go(
+                                    '/shares/${widget.pin}/preview/${report.id}',
+                                  );
+                                },
                               );
                             },
                           ),
