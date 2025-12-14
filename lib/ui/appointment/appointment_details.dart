@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_passport/models/appointment.dart';
+import 'package:health_passport/ui/share/select_reports.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
   final Appointment appointment;
@@ -60,6 +61,26 @@ class AppointmentDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 child: const Text('Close Appointment'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectReportsScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                child: const Text('Share Data'),
               ),
             ),
           ],
