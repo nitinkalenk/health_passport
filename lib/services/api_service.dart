@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:health_passport/models/appointment.dart';
 import 'package:health_passport/models/family_member.dart';
 import 'package:health_passport/models/patient.dart';
+import 'package:health_passport/models/health_status.dart';
 import 'package:health_passport/models/report.dart';
 import 'package:health_passport/models/share_details.dart';
 import 'package:http/http.dart' as http;
@@ -141,6 +142,17 @@ class ApiService {
       return Patient.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load patient');
+    }
+  }
+
+  Future<List<HealthStatus>> fetchHealthStatus() async {
+    final response = await http.get(Uri.parse('$baseUrl/checkHealthStatus'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((json) => HealthStatus.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load health status');
     }
   }
 }

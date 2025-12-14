@@ -1,5 +1,4 @@
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:health_passport/models/patient.dart';
@@ -147,13 +146,7 @@ class _SharesContentScreenState extends State<SharesContentScreen> {
                                 subtitle: Text(report.type),
                                 trailing: IconButton(
                                   icon: const Icon(Icons.download),
-                                  onPressed: () {
-                                    // ignore: unsafe_html
-                                    html.window.open(
-                                      '${ApiService.baseUrl}/download/${report.id}',
-                                      '_blank',
-                                    );
-                                  },
+                                  onPressed: () {},
                                 ),
                                 onTap: () {
                                   context.go(

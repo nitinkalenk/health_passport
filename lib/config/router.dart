@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:health_passport/config/routes.dart';
 import 'package:health_passport/ui/home/home.dart';
+import 'package:health_passport/ui/health/my_health.dart';
 import 'package:health_passport/ui/profile/profile.dart';
 import 'package:health_passport/ui/web/shares_content.dart';
 import 'package:health_passport/ui/web/shares_login.dart';
@@ -22,6 +23,10 @@ GoRouter router() => GoRouter(
         GoRoute(
           path: Routes.profile,
           builder: (context, state) => const ProfileScreen(),
+        ),
+        GoRoute(
+          path: Routes.myHealth,
+          builder: (context, state) => const MyHealthScreen(),
         ),
       ],
     ),
@@ -70,6 +75,8 @@ class _ScaffoldWithBottomNavBarState extends State<_ScaffoldWithBottomNavBar> {
     if (index == 0) {
       context.go(Routes.home);
     } else if (index == 1) {
+      context.go(Routes.myHealth);
+    } else if (index == 2) {
       context.go(Routes.profile);
     }
   }
@@ -78,6 +85,9 @@ class _ScaffoldWithBottomNavBarState extends State<_ScaffoldWithBottomNavBar> {
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith(Routes.profile)) {
+      return 2;
+    }
+    if (location.startsWith(Routes.myHealth)) {
       return 1;
     }
     return 0;
@@ -90,6 +100,10 @@ class _ScaffoldWithBottomNavBarState extends State<_ScaffoldWithBottomNavBar> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'My Health',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _calculateSelectedIndex(context),
