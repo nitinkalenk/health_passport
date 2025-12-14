@@ -137,46 +137,54 @@ class HomePageScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: appointmentsAsyncValue.when(
-              data: (appointments) {
-                return ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: appointments.length + 1, // +1 for Create Button
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 12),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      // Create Appointment Button
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: _buildCard(
-                          context,
-                          icon: Icons.add,
-                          label: 'Create Appointment',
-                          isAddButton: true,
-                          onTap: () {},
-                        ),
-                      );
-                    }
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                // Create Appointment Button (Always Visible)
+                UnconstrainedBox(
+                  child: _buildCard(
+                    context,
+                    icon: Icons.add,
+                    label: 'Create Appointment',
+                    isAddButton: true,
+                    onTap: () {},
+                  ),
+                ),
+                const SizedBox(width: 12),
 
-                    final appointment = appointments[index - 1];
-                    // Appointment Item - Styled same as Create Button (Square-ish)
-                    return Align(
-                      alignment: Alignment.centerLeft,
-                      child: _buildCard(
-                        context,
-                        icon: Icons.calendar_month,
-                        label:
-                            "${appointment.doctorName}\n${appointment.appointmentDate}",
-                        isAddButton: false,
-                        onTap: () {},
-                      ),
+                // Data / Loading / Error
+                ...appointmentsAsyncValue.when(
+                  data: (appointments) {
+                    if (appointments.isEmpty) {
+                      return [const Center(child: Text("No appointments"))];
+                    }
+                    return appointments.expand(
+                      (appointment) => [
+                        UnconstrainedBox(
+                          child: _buildCard(
+                            context,
+                            icon: Icons.calendar_month,
+                            label:
+                                "${appointment.doctorName}\n${appointment.appointmentDate}",
+                            isAddButton: false,
+                            onTap: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
                     );
                   },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Error: $err')),
+                  loading: () => [
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ],
+                  error: (err, stack) => [Center(child: Text('Error: $err'))],
+                ),
+              ],
             ),
           ),
         ],
