@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
 import 'package:health_passport/providers/family_members_provider.dart';
+import 'package:health_passport/ui/appointment/appointment_details.dart';
 import 'package:health_passport/ui/family/family_member_details.dart';
 import 'package:health_passport/providers/reports_provider.dart';
 
@@ -206,7 +207,17 @@ class HomePageScreen extends ConsumerWidget {
                             label:
                                 "${appointment.doctorName}\n${appointment.appointmentDate}",
                             isAddButton: false,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AppointmentDetailsScreen(
+                                        appointment: appointment,
+                                      ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
