@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
+import 'package:health_passport/providers/family_members_provider.dart';
 import 'package:health_passport/providers/reports_provider.dart';
 
 class HomePageScreen extends ConsumerWidget {
@@ -57,7 +58,7 @@ class HomePageScreen extends ConsumerWidget {
             Expanded(
               child: Column(
                 children: [
-                  Expanded(child: _buildFamilySection(context)),
+                  Expanded(child: _buildFamilySection(context, ref)),
                   const Divider(height: 1),
                   Expanded(child: _buildAppointmentsSection(context, ref)),
                   const Divider(height: 1),
@@ -71,7 +72,9 @@ class HomePageScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFamilySection(BuildContext context) {
+  Widget _buildFamilySection(BuildContext context, WidgetRef ref) {
+    final familyMembersAsyncValue = ref.watch(familyMembersProvider);
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -91,22 +94,48 @@ class HomePageScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: Row(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
-                _buildCard(
-                  context,
-                  icon: Icons.add,
-                  label: 'Add Family Member',
-                  isAddButton: true,
-                  onTap: () {},
+                UnconstrainedBox(
+                  child: _buildCard(
+                    context,
+                    icon: Icons.add,
+                    label: 'Add Family Member',
+                    isAddButton: true,
+                    onTap: () {},
+                  ),
                 ),
                 const SizedBox(width: 12),
-                _buildCard(
-                  context,
-                  icon: Icons.person,
-                  label: 'John Doe',
-                  isAddButton: false,
-                  onTap: () {},
+                ...familyMembersAsyncValue.when(
+                  data: (members) {
+                    if (members.isEmpty) {
+                      return [const Center(child: Text("No family members"))];
+                    }
+                    return members.expand(
+                      (member) => [
+                        UnconstrainedBox(
+                          child: _buildCard(
+                            context,
+                            icon: Icons.person,
+                            label: member.fullName,
+                            isAddButton: false,
+                            onTap: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                    );
+                  },
+                  loading: () => [
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ],
+                  error: (err, stack) => [Center(child: Text('Error: $err'))],
                 ),
               ],
             ),
