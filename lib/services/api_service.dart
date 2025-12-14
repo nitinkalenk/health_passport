@@ -4,6 +4,7 @@ import 'package:health_passport/models/appointment.dart';
 import 'package:health_passport/models/family_member.dart';
 import 'package:health_passport/models/patient.dart';
 import 'package:health_passport/models/report.dart';
+import 'package:health_passport/models/share_details.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -20,14 +21,30 @@ class ApiService {
     }
   }
 
-  Future<List<Report>> fetchReports() async {
-    final response = await http.get(Uri.parse('$baseUrl/patients/1/documents'));
+  Future<List<Report>> fetchReports({int? patientId}) async {
+    final id = patientId ?? 1;
+    final response = await http.get(
+      Uri.parse('$baseUrl/patients/$id/documents'),
+    );
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
       return jsonList.map((json) => Report.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load reports');
+    }
+  }
+
+  Future<ShareDetails> fetchShareDetails(String pin) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/shareDocuments/$pin'),
+      headers: {'accept': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return ShareDetails.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load share details');
     }
   }
 
