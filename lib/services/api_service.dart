@@ -90,4 +90,29 @@ class ApiService {
       throw Exception('Failed to upload document');
     }
   }
+
+  Future<bool> shareDocuments(
+    int shareId,
+    List<int> documentIds,
+    DateTime expirationTime,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/shareDocuments/$shareId'),
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "patientId": "1",
+        "documents": documentIds.map((e) => e.toString()).toList(),
+        "expirationTime": expirationTime.toIso8601String(),
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception('Failed to share documents');
+    }
+  }
 }
