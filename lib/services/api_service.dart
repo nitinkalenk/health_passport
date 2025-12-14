@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:health_passport/models/appointment.dart';
 import 'package:health_passport/models/family_member.dart';
 import 'package:health_passport/models/report.dart';
@@ -54,6 +55,39 @@ class ApiService {
       return true;
     } else {
       throw Exception('Failed to create appointment');
+    }
+  }
+
+  Future<bool> uploadDocument(
+    File file,
+    String documentType,
+    int patientId,
+  ) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/upload_document/'),
+    );
+
+    request.headers['accept'] = 'application/json';
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    request.fields['patient_id'] = patientId.toString();
+    request.fields['document_type'] = documentType;
+
+    // Determine mime type if needed, or let standard inference handle it
+    // For now, simpler implementation:
+    // User curl example: file=@pip.pyz;type=application/x-zip-compressed
+    // We'll just add the file directly.
+
+    // Note: http package multipart file fromPath infers type usually
+    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception('Failed to upload document');
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_passport/models/appointment.dart';
+import 'package:health_passport/ui/appointment/close_appointment.dart';
 import 'package:health_passport/ui/share/select_reports.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
@@ -48,10 +49,10 @@ class AppointmentDetailsScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Placeholder action for "Close Appointment"
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Close Appointment button clicked'),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CloseAppointmentScreen(),
                     ),
                   );
                 },
