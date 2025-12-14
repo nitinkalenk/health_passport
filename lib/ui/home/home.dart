@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_passport/providers/appointments_provider.dart';
 import 'package:health_passport/providers/family_members_provider.dart';
+import 'package:health_passport/providers/reports_provider.dart';
 import 'package:health_passport/ui/appointment/appointment_details.dart';
 import 'package:health_passport/ui/appointment/create_appointment.dart';
 import 'package:health_passport/ui/family/family_member_details.dart';
-import 'package:health_passport/providers/reports_provider.dart';
+import 'package:health_passport/ui/report/report_preview.dart';
 
 class HomePageScreen extends ConsumerWidget {
   const HomePageScreen({super.key});
@@ -300,7 +301,15 @@ class HomePageScreen extends ConsumerWidget {
                                 : Icons.description,
                             label: report.filename,
                             isAddButton: false,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ReportPreviewScreen(report: report),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
