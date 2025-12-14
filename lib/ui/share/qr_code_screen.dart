@@ -8,7 +8,7 @@ class QRCodeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String url = 'http://localhost:1000/$shareId';
+    final String url = 'http://localhost:8090/#/shares$shareId';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Share Data')),
@@ -26,7 +26,7 @@ class QRCodeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'OR Open http://localhost:1000 and enter share pin :',
+                'OR Open http://localhost:8090/#/shares and enter share pin :',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
